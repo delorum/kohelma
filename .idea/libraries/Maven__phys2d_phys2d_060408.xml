@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: phys2d:phys2d:060408">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/phys2d/phys2d/060408/phys2d-060408.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/phys2d/phys2d/060408/phys2d-060408-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/phys2d/phys2d/060408/phys2d-060408-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

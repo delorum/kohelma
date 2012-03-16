@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/kohelma.iml" filepath="$PROJECT_DIR$/kohelma.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../koho/koho.iml" filepath="$PROJECT_DIR$/../koho/koho.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../scage/scage.iml" filepath="$PROJECT_DIR$/../scage/scage.iml" />
+    </modules>
+  </component>
+</project>
+
