@@ -35,33 +35,4 @@ public class KohelmaGUI {
     JLabel inputNeuronsSettingLabel;
     JLabel hiddenNeuronsSettingLabel;
     JLabel outputNeuronsSettingLabel;
-
-    /*public KohelmaGUI() {
-
-        *//*загрузитьButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser loadElm = new JFileChooser();
-                if (loadElm.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
-                    File elman_file = loadElm.getSelectedFile();
-                    elman = Elman.apply(elman_file.getAbsolutePath());
-                    inputNeuronsSettingLabel.setText(elman.);
-                }
-            }
-        });*//*
-    }*/
-
-    /*private void createUIComponents() {
-        // TODO: place custom component creation code here
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Handwriting OCR");
-        KohelmaGUI gui = new KohelmaGUI();
-        frame.setContentPane(gui.mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        Point centerPoint = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-        frame.setLocation((int)centerPoint.getX() - 400, (int)centerPoint.getY() - 300);
-        frame.setVisible(true);
-    }*/
 }
