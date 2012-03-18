@@ -9,14 +9,15 @@ import collection.mutable.{HashMap, ArrayBuffer}
  * @param image_width - ширина одной картинки
  * @param image_height - высота картинки
  */
-class KohelmaImages(image_width:Int = 75, image_height:Int = 75) {
+class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
   private val _characters_to_output = HashMap[Char, (Array[Double], Int)]() // char -> (expected_array, expected_neuron_num)
+  def charactersToOutput = _characters_to_output.toMap
 
   private val _output_to_characters = HashMap[Int, Char]() // neuron_num -> char
   def outputToCharacters = _output_to_characters.toMap
 
-  private val _sets = ArrayBuffer[(String, List[(String, Char, Array[Double])])]() // (directory, List((image_name, char, image_array)))
-  def sets = _sets.toArray
+  private val _sets = HashMap[String, List[(String, Char, Array[Double])]]() // (directory -> List((image_name, char, image_array)))
+  def sets = _sets.toMap
 
   /**
    * Функция добавляет новый набор картинок
@@ -47,7 +48,16 @@ class KohelmaImages(image_width:Int = 75, image_height:Int = 75) {
       }
     ).toList
 
-    _sets += ((directory, images))
+    _sets += (directory -> images)
+  }
+
+  /**
+   * Удаляет тренировочный набор из списка наборов
+   *
+   * @param directory - имя папки с тренировочным набором, который требуется удалить
+   */
+  def removeSet(directory:String) {
+    _sets -= directory
   }
 
   /**
@@ -77,7 +87,7 @@ class KohelmaImages(image_width:Int = 75, image_height:Int = 75) {
    */
   def trainNewElman(learn_rate:Double = 0.2, context_size:Int = 3, training_reps:Int = 100000000, error_threshold:Double = 0.09, reporter:String => Unit = {message => println(message)}):Elman = {
     val elman = new Elman(image_width*image_height, context_size, _characters_to_output.keys.size)
-    trainElman(elman, learn_rate, context_size, training_reps, error_threshold, reporter)
+    trainElman(elman, learn_rate, training_reps, error_threshold, reporter)
   }
 
   /**
@@ -86,19 +96,18 @@ class KohelmaImages(image_width:Int = 75, image_height:Int = 75) {
    * @param elman - сеть Элмана, которую требуется обучить. Переданная в качестве параметра сеть Элмана должна соответствовать требованиям на количество
    * нейронов во входном слое, скрытом слое и в выходном слое
    * @param learn_rate - коэффициент обучения (величина коррекции весов за одну итерацию обучения)
-   * @param context_size -  количество нейронов в контекстном и скрытом слоях
    * @param training_reps - количество повторений тренировочной сессии (предъявлений всех картинок из всех наборов)
    * @param error_threshold - порог ошибки, по достижении которой считаем сеть обученной и прерываем алгоритм обучения.
    * @param reporter - функция для передачи различной отладочной информации из алгоритма обучения в процессе его работы
    * @return обученную сеть Элмана
    */
-  def trainElman(elman:Elman, learn_rate:Double = 0.2, context_size:Int = 3, training_reps:Int = 100000000, error_threshold:Double = 0.09, reporter:String => Unit = {message => println(message)}):Elman = {
+  def trainElman(elman:Elman, learn_rate:Double = 0.2, training_reps:Int = 100000000, error_threshold:Double = 0.09, reporter:String => Unit = {message => println(message)}):Elman = {
     require(elman.input_neurons == image_width*image_height)
-    require(elman.hidden_neurons == context_size)
     require(elman.output_neurons == _characters_to_output.keys.size)
 
     val training_set = (for {
-      (directory, images_list) <- _sets
+      directory <- _sets.keys
+      images_list = _sets(directory)
       images_list_length = images_list.length
       (image_name, char, image_array) <- images_list
       (expected_array, expected_neuron_num) = _characters_to_output(char)
@@ -130,7 +139,7 @@ object TestKohelmaImages extends App {
   elman.save("alphabet.elman")*/
 
   // тестируем обученную сеть
-  val images_list = kohelma_images.sets.map(elem => elem._2).flatten
+  /*val images_list = kohelma_images.sets.map(elem => elem._2).flatten
   //var sum = 0
   for {
     num <- 0 until 1000
@@ -141,6 +150,6 @@ object TestKohelmaImages extends App {
     val (_, answer_index) = (outputs.zipWithIndex.find {case (output, index) => output == outputs.max}).get
     println("["+num+"] exptected: "+char+"; actual: "+kohelma_images.outputToCharacters(answer_index)/*+"; diff: "+(char.toInt - kohelma_images.outputToCharacters(answer_index).toInt)*/)
     //sum += (char.toInt - kohelma_images.outputToCharacters(answer_index).toInt)
-  }
+  }*/
   //println("sum: "+sum)
 }

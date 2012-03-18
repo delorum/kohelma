@@ -11,6 +11,16 @@ import java.io._
 case class TrainingSet(inputs:Array[Double], expected:Array[Double])
 
 object Elman {
+  def apply() = {
+    new Elman(3, 3, 6)
+  }
+
+  def apply(input_neurons:Int,
+            hidden_neurons:Int,
+            output_neurons:Int) = {
+    new Elman(input_neurons, hidden_neurons, output_neurons)
+  }
+
   def apply(input_neurons:Int,
             hidden_neurons:Int,
             output_neurons:Int,
@@ -223,8 +233,21 @@ object Elman {
                     }
 
 
-   private var stop_trainig = false
-   def stopTraining() {stop_trainig = true}
+  private var stop_training = false
+
+  /**
+   * Метод останавливает запущенную тренировку сети
+   */
+  def stopTraining() {stop_training = true}
+    
+  private var is_training_started = false
+
+  /**
+   * Функция запроса состояния тренировки сети
+   *
+   * @return - true/false - тренировка запущена/не запущена
+   */
+  def isTrainingStarted = is_training_started
 
   /**
    * Функция осуществляет обучение данной нейронной сети Элмана
@@ -235,6 +258,8 @@ object Elman {
    * @param reporter - функция для передачи различной отладочной информации из алгоритма обучения в процессе его работы
   */
   def train(training_session:Array[TrainingSet], training_reps:Int = 100000000, error_threshold:Double = 0.09, learn_rate:Double = 0.2, reporter:String => Unit = {message => println(message)}) {
+    stop_training = false
+    is_training_started = true
     // в эти переменные будем сохранять лучшие веса и лучшую ошибку в процессе обучения
     var best_who = Array.ofDim[Double](hidden_neurons+1,  output_neurons)
     var best_wih = Array.ofDim[Double](input_neurons+1,   hidden_neurons)
@@ -245,8 +270,7 @@ object Elman {
     var iteration = 0     // общий счетчик шагов обучения
     var next_in_set = 0   // счетчик тренировочных наборов внутри сессии training_session
     var next_session = 0  // счетчик повторений тренировочной сессии training_session
-    stop_trainig = false
-    while(next_session < training_reps && worst_erro > error_threshold && !stop_trainig) {
+    while(next_session < training_reps && worst_erro > error_threshold && !stop_training) {
       // получаем очередной тренировочный набор к нашей сети на входные значения из данного тренировочного набора
       val TrainingSet(inputs, expected) = training_session(next_in_set)
       val actual = outputs(inputs)
@@ -315,6 +339,7 @@ object Elman {
     hidden = best_hidden
     context = best_context*/
     reporter("worst erro: "+worst_erro)
+    is_training_started = false
   }
 
   def save(file:String) {
