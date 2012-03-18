@@ -40,7 +40,7 @@
                 </constraints>
                 <properties>
                   <editable value="false"/>
-                  <text value="Handwriting OCR - программа для распознавания рукописного текста и дальнейшего&#10;перевода рукописных символов в печатные.&#10;Для перехода в нужный режим работы нажмите соответствующую клавишу в верхней части окна.&#10;&#10;Режим &quot;Настройки&quot; позволяет загрузить предварительно обученную нейронную сеть, либо задать&#10;параметры для обучения новой.&#10;&#10;В режиме &quot;Обучение&quot; происходит тренировка новой нейронной сети на готовых наборах данных,&#10;заданных в настройках.&#10;&#10;Режим &quot;Распознавание&quot; позволяет использовать предварительно обученную сеть для распознавания&#10;рукописного текста"/>
+                  <text value="Handwriting OCR - программа для распознавания рукописного текста и дальнейшего&#10;перевода рукописных символов в печатные.&#10;Для перехода в нужный режим работы выберите соответствующую вкладку в верхней части окна.&#10;&#10;Режим &quot;Обучение&quot; позволяет загрузить предварительно обученную нейронную сеть, а также задать&#10;параметры для обучения новой. Обучение сети происходит на готовых наборах данных, которые задаются здес же.&#10;&#10;Режим &quot;Распознавание&quot; позволяет использовать предварительно обученную сеть для распознавания&#10;рукописного текста"/>
                 </properties>
                 <clientProperties>
                   <JEditorPane.honorDisplayProperties class="java.lang.Boolean" value="true"/>
@@ -48,110 +48,7 @@
               </component>
             </children>
           </grid>
-          <grid id="7c31f" binding="trainingPanel" layout-manager="GridLayoutManager" row-count="7" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints>
-              <tabbedpane title="Настройки"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="96813" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font style="1"/>
-                  <text value="Сеть: "/>
-                </properties>
-              </component>
-              <vspacer id="d0bce">
-                <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                </constraints>
-              </vspacer>
-              <component id="e58d" class="javax.swing.JLabel" binding="settings_labels_netPath">
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value=""/>
-                </properties>
-              </component>
-              <component id="b1c2" class="javax.swing.JButton" binding="settings_buttons_loadNet">
-                <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Загрузить"/>
-                </properties>
-              </component>
-              <component id="5838a" class="javax.swing.JSeparator">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="2e5cc" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <font style="1"/>
-                  <text value="Параметры"/>
-                </properties>
-              </component>
-              <component id="bf974" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Входной слой: "/>
-                </properties>
-              </component>
-              <component id="20902" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Скрытый слой: "/>
-                </properties>
-              </component>
-              <component id="18ca7" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Выходной слой: "/>
-                </properties>
-              </component>
-              <component id="9eaa6" class="javax.swing.JLabel" binding="settings_labels_inputNeurons">
-                <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="0"/>
-                </properties>
-              </component>
-              <component id="7aa53" class="javax.swing.JLabel" binding="settings_labels_hiddenNeurons">
-                <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="0"/>
-                </properties>
-              </component>
-              <component id="23fc1" class="javax.swing.JLabel" binding="settings_labels_outputNeurons">
-                <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="0"/>
-                </properties>
-              </component>
-            </children>
-          </grid>
-          <grid id="9a586" binding="settingsPanel" layout-manager="GridLayoutManager" row-count="23" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="9a586" binding="trainingPanel" layout-manager="GridLayoutManager" row-count="23" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Обучение"/>

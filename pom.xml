@@ -15,6 +15,12 @@
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
     </repository>
+
+    <repository>
+            <id>scage</id>
+            <name>Scage Maven Repo</name>
+            <url>http://scage.googlecode.com/svn/maven-repository</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -22,6 +28,17 @@
       <id>scala-tools.org</id>
       <name>Scala-Tools Maven2 Repository</name>
       <url>http://scala-tools.org/repo-releases</url>
+    </pluginRepository>
+
+    <pluginRepository>
+            <id>Codehaus Snapshots</id>
+            <url>http://nexus.codehaus.org/snapshots/</url>
+            <snapshots>
+              <enabled>true</enabled>
+            </snapshots>
+            <releases>
+              <enabled>true</enabled>  <!-- Workaround for MNG-2974, see note below -->
+            </releases>
     </pluginRepository>
   </pluginRepositories>
 
@@ -48,12 +65,34 @@
           <version>1.0</version>
           <scope>compile</scope>
     </dependency>
+    <dependency>
+                  <groupId>com.intellij</groupId>
+                  <artifactId>forms_rt</artifactId>
+                  <version>7.0.3</version>
+    </dependency>
   </dependencies>
 
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
+      <resources>
+                  <resource>
+                        <directory>${project.build.directory}/dependency</directory>
+                  </resource>
+                  <resource>
+                            <directory>src/main/resources</directory>
+                  </resource>
+      </resources>
     <plugins>
+      <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.0.2</version>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
@@ -85,6 +124,49 @@
             <classpathContainer>ch.epfl.lamp.sdt.launching.SCALA_CONTAINER</classpathContainer>
           </classpathContainers>
         </configuration>
+      </plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>ideauidesigner-maven-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>javac2</goal>
+                    </goals>
+                </execution>
+            </executions>
+
+            <configuration>
+                <fork>true</fork>
+                <debug>true</debug>
+                <failOnError>true</failOnError>
+            </configuration>
+        </plugin>
+      <plugin>
+                              <groupId>org.apache.maven.plugins</groupId>
+                              <artifactId>maven-dependency-plugin</artifactId>
+                              <executions>
+                               <execution>
+                                <id>unpack-dependencies</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                 <goal>unpack-dependencies</goal>
+                                </goals>
+                               </execution>
+                              </executions>
+      </plugin>
+      <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <version>2.3.1</version>
+                            <configuration>
+                               <archive>
+                                  <manifest>
+                                     <!--<addClasspath>true</addClasspath>-->
+                                     <mainClass>kohelma.swing.KohelmaMain</mainClass>
+                                  </manifest>
+                               </archive>
+                            </configuration>
       </plugin>
     </plugins>
   </build>
