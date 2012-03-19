@@ -84,6 +84,23 @@
                   </resource>
       </resources>
     <plugins>
+        <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                  <execution>
+                    <phase>process-resources</phase>
+                    <configuration>
+                      <target>
+                          <ant antfile="build.xml" target="all"/>
+                      </target>
+                    </configuration>
+                    <goals>
+                      <goal>run</goal>
+                    </goals>
+                  </execution>
+                </executions>
+        </plugin>
       <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
@@ -125,23 +142,6 @@
           </classpathContainers>
         </configuration>
       </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>ideauidesigner-maven-plugin</artifactId>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>javac2</goal>
-                    </goals>
-                </execution>
-            </executions>
-
-            <configuration>
-                <fork>true</fork>
-                <debug>true</debug>
-                <failOnError>true</failOnError>
-            </configuration>
-        </plugin>
       <plugin>
                               <groupId>org.apache.maven.plugins</groupId>
                               <artifactId>maven-dependency-plugin</artifactId>
@@ -162,7 +162,7 @@
                             <configuration>
                                <archive>
                                   <manifest>
-                                     <!--<addClasspath>true</addClasspath>-->
+                                     <addClasspath>true</addClasspath>
                                      <mainClass>kohelma.swing.KohelmaMain</mainClass>
                                   </manifest>
                                </archive>
