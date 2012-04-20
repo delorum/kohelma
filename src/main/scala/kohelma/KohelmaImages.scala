@@ -10,11 +10,11 @@ import collection.mutable.{HashMap, ArrayBuffer}
  * @param image_height - высота картинки
  */
 class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
-  private val _characters_to_output = HashMap[Char, (Array[Double], Int)]() // char -> (expected_array, expected_neuron_num)
-  def charactersToOutput = _characters_to_output.toMap
+  private val _character_to_output = HashMap[Char, (Array[Double], Int)]() // char -> (expected_array, expected_neuron_num)
+  def characterToOutput = _character_to_output.toMap
 
-  private val _output_to_characters = HashMap[Int, Char]() // neuron_num -> char
-  def outputToCharacters = _output_to_characters.toMap
+  private val _output_to_character = HashMap[Int, Char]() // neuron_num -> char
+  def outputToCharacter = _output_to_character.toMap
 
   private val _sets = HashMap[String, List[(String, Char, Array[Double])]]() // (directory -> List((image_name, char, image_array)))
   def sets = _sets.toMap
@@ -29,12 +29,12 @@ class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
       line.toCharArray
     }).toArray.flatten
 
-    _characters_to_output ++= (for {
+    _character_to_output ++= (for {
       num <- 0 until characters.length
       char = characters(num)
     } yield (char -> (createExpected(characters.length, num), num))).toMap
 
-    _output_to_characters ++= (for {
+    _output_to_character ++= (for {
       num <- 0 until characters.length
       char = characters(num)
     } yield (num -> char)).toMap
@@ -86,7 +86,7 @@ class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
    * @return обученную сеть Элмана
    */
   def trainNewElman(learn_rate:Double = 0.2, context_size:Int = 3, training_reps:Int = 100000000, error_threshold:Double = 0.09, reporter:String => Unit = {message => println(message)}):Elman = {
-    val elman = new Elman(image_width*image_height, context_size, _characters_to_output.keys.size)
+    val elman = new Elman(image_width*image_height, context_size, _character_to_output.keys.size)
     trainElman(elman, learn_rate, training_reps, error_threshold, reporter)
   }
 
@@ -103,14 +103,14 @@ class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
    */
   def trainElman(elman:Elman, learn_rate:Double = 0.2, training_reps:Int = 100000000, error_threshold:Double = 0.09, reporter:String => Unit = {message => println(message)}):Elman = {
     require(elman.input_neurons == image_width*image_height)
-    require(elman.output_neurons == _characters_to_output.keys.size)
+    require(elman.output_neurons == _character_to_output.keys.size)
 
     val training_set = (for {
       directory <- _sets.keys
       images_list = _sets(directory)
       images_list_length = images_list.length
       (image_name, char, image_array) <- images_list
-      (expected_array, expected_neuron_num) = _characters_to_output(char)
+      (expected_array, expected_neuron_num) = _character_to_output(char)
     } yield {
       //println(directory+" "+image_name+" "+char+" "+expected_neuron_num)
       TrainingSet(image_array, expected_array)
@@ -148,8 +148,8 @@ object TestKohelmaImages extends App {
     val (_, char, image_array) = images_list(random_image)
     val outputs = elman.outputs(image_array)
     val (_, answer_index) = (outputs.zipWithIndex.find {case (output, index) => output == outputs.max}).get
-    println("["+num+"] exptected: "+char+"; actual: "+kohelma_images.outputToCharacters(answer_index)/*+"; diff: "+(char.toInt - kohelma_images.outputToCharacters(answer_index).toInt)*/)
-    //sum += (char.toInt - kohelma_images.outputToCharacters(answer_index).toInt)
+    println("["+num+"] exptected: "+char+"; actual: "+kohelma_images.outputToCharacter(answer_index)/*+"; diff: "+(char.toInt - kohelma_images.outputToCharacter(answer_index).toInt)*/)
+    //sum += (char.toInt - kohelma_images.outputToCharacter(answer_index).toInt)
   }*/
   //println("sum: "+sum)
 }

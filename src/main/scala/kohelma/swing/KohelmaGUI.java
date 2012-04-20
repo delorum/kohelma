@@ -35,4 +35,11 @@ public class KohelmaGUI {
     JButton training_buttons_newNet;
     JButton training_buttons_loadNet;
     JLabel recognition_labels_imagePath;
+    JPanel networksPanel;
+    JComboBox networks_comboboxes_netList;
+    JButton networks_buttons_addNet;
+    JButton networks_buttons_removeNet;
+    JButton networks_buttons_loadImage;
+    JTextPane networks_textpanes_text;
+    JButton networks_buttons_saveText;
 }

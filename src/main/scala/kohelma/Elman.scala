@@ -1,6 +1,7 @@
 package kohelma
 
 import java.io._
+import collection.mutable.HashMap
 
 
 /**
@@ -149,6 +150,12 @@ object Elman {
   
   val context_neurons:Int = hidden_neurons  // количество нейронов в контекстном слое. Равняется количеству нейронов скрытого слоя
 
+  private var _output_to_character = HashMap[Int, Char]() // neuron_num -> char
+  def outputToCharacter_=(new_output_to_character:Map[Int, Char]) {
+    _output_to_character ++= new_output_to_character
+  }
+  def outputToCharacter = _output_to_character.toMap
+
   require(wih.length == input_neurons+1)
   require(!wih.isEmpty && wih(0).length == hidden_neurons)
   require(wch.length == context_neurons+1)
@@ -203,35 +210,41 @@ object Elman {
    * @param inputs - массив значений на нейронах входного слоя. Длина массива должна равняться количеству нейронов входного слоя!
    * @return - массив значений на выходе
    */
-                    def outputs(inputs:Array[Double]) = {
-                      // вычисляем значения на нейронах скрытого слоя
-                      for(h <- 0 until hidden_neurons)
-                        hidden(h) = sigmoid(
-                          inputs.zipWithIndex.foldLeft(0.0)({
-                            case (sum, (input_elem, i)) => sum + input_elem*wih(i)(h)
-                          }) + wih(input_neurons)(h) +  // прибавляем дополнительное "смещение"
-                            context.zipWithIndex.foldLeft(0.0)({
-                              case (sum, (context_elem, c)) => sum + context_elem*wch(c)(h)
-                            }) + wch(context_neurons)(h)  // прибавляем дополнительное "смещение"
-                        )
+   def outputs(inputs:Array[Double]) = {
+     // вычисляем значения на нейронах скрытого слоя
+     for(h <- 0 until hidden_neurons)
+       hidden(h) = sigmoid(
+         inputs.zipWithIndex.foldLeft(0.0)({
+           case (sum, (input_elem, i)) => sum + input_elem*wih(i)(h)
+         }) + wih(input_neurons)(h) +  // прибавляем дополнительное "смещение"
+           context.zipWithIndex.foldLeft(0.0)({
+             case (sum, (context_elem, c)) => sum + context_elem*wch(c)(h)
+           }) + wch(context_neurons)(h)  // прибавляем дополнительное "смещение"
+       )
 
-                      // вычисляем значения на нейронах выходного слоя
-                      val outputs = Array.ofDim[Double](output_neurons)
-                      for(o <- 0 until output_neurons)
-                        outputs(o) = sigmoid(
-                          hidden.zipWithIndex.foldLeft(0.0)({
-                            case (sum, (hidden_elem, h)) => sum + hidden_elem*who(h)(o)
-                          }) + who(hidden_neurons)(o)   // прибавляем дополнительное "смещение"
-                        )
+     // вычисляем значения на нейронах выходного слоя
+     val outputs = Array.ofDim[Double](output_neurons)
+     for(o <- 0 until output_neurons)
+       outputs(o) = sigmoid(
+         hidden.zipWithIndex.foldLeft(0.0)({
+           case (sum, (hidden_elem, h)) => sum + hidden_elem*who(h)(o)
+         }) + who(hidden_neurons)(o)   // прибавляем дополнительное "смещение"
+       )
 
-                      // обновляем значения на нейронах контекстного слоя (присваиваем туда значения из скрытогоостана)
-                      for(c <- 0 until context_neurons)
-                        context(c) = hidden(c)*whc(c)
+     // обновляем значения на нейронах контекстного слоя (присваиваем туда значения из скрытогоостана)
+     for(c <- 0 until context_neurons)
+       context(c) = hidden(c)*whc(c)
 
-                      // возвращаем результат
-                      outputs
-                    }
+     // возвращаем результат
+     outputs
+   }
 
+  def character(inputs:Array[Double]) = {
+    val answers = outputs(inputs)
+    val answers_max = answers.max
+    val (_, answer_index) = (answers.zipWithIndex.find {case (answer, index) => answer == answers_max}).get
+    outputToCharacter(answer_index)
+  }
 
   private var stop_training = false
 
@@ -342,6 +355,10 @@ object Elman {
     is_training_started = false
   }
 
+    /**
+     * Метод сохраняет сеть в текстовый файл
+     * @param file - путь до файла, куда сохраняем сеть. Рекомендуется использовать расширение .elman
+     */
   def save(file:String) {
     val fos = new FileOutputStream(file)
     val sb = new StringBuilder
@@ -390,11 +407,22 @@ object Elman {
     } sb.append(elem+"\n")
     sb.append("---\n")
 
+    sb.append("characters\n")
+    for {
+      (neuron_num, character) <- _output_to_character
+    } sb.append(neuron_num+" -> "+character+"\n")
+    sb.append("---\n")
+
     fos.write(sb.toString().getBytes)
     fos.flush()
     fos.close()
   }
 
+    /**
+     * Метод загружает сеть из текстового файла
+     *
+     * @param file - путь до файла, содержащего данные сети
+     */
   def load(file:String) {
     val reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
     var i, j = 0
@@ -408,6 +436,7 @@ object Elman {
         case "who" => current_loading_array = "who"
         case "whc" => current_loading_array = "whc"
         case "context" => current_loading_array = "context"
+        case "characters" => current_loading_array = "characters"
         case "---" =>
           i = 0; j = 0
         case elem =>
@@ -421,6 +450,9 @@ object Elman {
             case "context" =>
               context(i) = elem.toDouble
               i += 1
+            case "characters" =>
+              val data = elem.split("->").map(_.trim())
+              if(data.size >= 2) _output_to_character += (data(0).toInt -> data(1).charAt(0))
             case _ => //do nothing
           }
       }
