@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="kohelma" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.ftl"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
+  <path id="jdk.classpath.1.6">
+    <fileset dir="${jdk.home.1.6}">
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/alt-string.jar"/>
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/alt-rt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.maven:_junit:junit:3.8.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/net/sourceforge/javaocr/javaocr/1.0/javaocr-1.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.scala-lang:scala-library:2.9.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/scala-lang/scala-library/2.9.1/scala-library-2.9.1.jar"/>
+  </path>
+  
+  <path id="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/scala-lang/scala-swing/2.9.1/scala-swing-2.9.1.jar"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm.jar"/>
+    <pathelement location="${javac2.home}/asm-commons.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module kohelma -->
+  
+  <dirname property="module.kohelma.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.kohelma" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.kohelma" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.kohelma" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.kohelma" value="${compiler.args}"/>
+  
+  <property name="kohelma.output.dir" value="${module.kohelma.basedir}/target/classes"/>
+  <property name="kohelma.testoutput.dir" value="${module.kohelma.basedir}/target/test-classes"/>
+  
+  <path id="kohelma.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="kohelma.module.production.classpath">
+    <path refid="${module.jdk.classpath.kohelma}"/>
+    <pathelement location="${idea.home}/lib/javac2.jar"/>
+    <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
+    <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
+    <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+  </path>
+  
+  <path id="kohelma.runtime.production.module.classpath">
+    <pathelement location="${kohelma.output.dir}"/>
+    <pathelement location="${idea.home}/lib/javac2.jar"/>
+    <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
+    <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
+    <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+  </path>
+  
+  <path id="kohelma.module.classpath">
+    <path refid="${module.jdk.classpath.kohelma}"/>
+    <pathelement location="${kohelma.output.dir}"/>
+    <pathelement location="${idea.home}/lib/javac2.jar"/>
+    <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
+    <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
+    <path refid="library.maven:_junit:junit:3.8.1.classpath"/>
+    <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+  </path>
+  
+  <path id="kohelma.runtime.module.classpath">
+    <pathelement location="${kohelma.testoutput.dir}"/>
+    <pathelement location="${kohelma.output.dir}"/>
+    <pathelement location="${idea.home}/lib/javac2.jar"/>
+    <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
+    <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
+    <path refid="library.maven:_junit:junit:3.8.1.classpath"/>
+    <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.kohelma">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.kohelma">
+    <patternset refid="excluded.from.module.kohelma"/>
+  </patternset>
+  
+  <path id="kohelma.module.sourcepath">
+    <dirset dir="${module.kohelma.basedir}">
+      <include name="src/main/scala"/>
+    </dirset>
+  </path>
+  
+  <path id="kohelma.module.test.sourcepath">
+    <dirset dir="${module.kohelma.basedir}">
+      <include name="src/test/scala"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.kohelma" depends="compile.module.kohelma.production,compile.module.kohelma.tests" description="Compile module kohelma"/>
+  
+  <target name="compile.module.kohelma.production" depends="register.custom.compilers" description="Compile module kohelma; production classes">
+    <mkdir dir="${kohelma.output.dir}"/>
+    <javac2 destdir="${kohelma.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.kohelma}/javac">
+      <compilerarg line="${compiler.args.kohelma}"/>
+      <bootclasspath refid="kohelma.module.bootclasspath"/>
+      <classpath refid="kohelma.module.production.classpath"/>
+      <src refid="kohelma.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.kohelma"/>
+    </javac2>
+    
+    <copy todir="${kohelma.output.dir}">
+      <fileset dir="${module.kohelma.basedir}/src/main/scala">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.kohelma.tests" depends="register.custom.compilers,compile.module.kohelma.production" description="compile module kohelma; test classes" unless="skip.tests">
+    <mkdir dir="${kohelma.testoutput.dir}"/>
+    <javac2 destdir="${kohelma.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.kohelma}/javac">
+      <compilerarg line="${compiler.args.kohelma}"/>
+      <bootclasspath refid="kohelma.module.bootclasspath"/>
+      <classpath refid="kohelma.module.classpath"/>
+      <src refid="kohelma.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.kohelma"/>
+    </javac2>
+    
+    <copy todir="${kohelma.testoutput.dir}">
+      <fileset dir="${module.kohelma.basedir}/src/test/scala">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.kohelma" description="cleanup module">
+    <delete dir="${kohelma.output.dir}"/>
+    <delete dir="${kohelma.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.kohelma" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.kohelma" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
