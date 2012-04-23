@@ -29,8 +29,9 @@ object Elman {
             wch:Array[Array[Double]],
             who:Array[Array[Double]],
             whc:Array[Double],
-            context:Array[Double]):Elman = {
-    new Elman(input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context)    
+            context:Array[Double],
+            output_to_character:HashMap[Int, Char]):Elman = {
+    new Elman(input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context, output_to_character)
   }
 
   def apply(input_neurons:Int,
@@ -41,11 +42,11 @@ object Elman {
   }
   
   def apply(file:String):Elman = {
-    val (input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context) = loadParams(file)
-    new Elman(input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context)
+    val (input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context, output_to_character) = loadParams(file)
+    new Elman(input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context, output_to_character)
   }
 
-  def loadParams(file:String):(Int, Int, Int, Array[Array[Double]], Array[Array[Double]], Array[Array[Double]], Array[Double], Array[Double]) = {
+  def loadParams(file:String):(Int, Int, Int, Array[Array[Double]], Array[Array[Double]], Array[Array[Double]], Array[Double], Array[Double], HashMap[Int, Char]) = {
     val reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))
     var input_neurons, hidden_neurons, output_neurons = 0
     var wih:Array[Array[Double]] = null 
@@ -53,6 +54,7 @@ object Elman {
     var who:Array[Array[Double]] = null
     var whc:Array[Double] = null
     var context:Array[Double] = null
+    val output_to_character = HashMap[Int, Char]()
     var i, j = 0
     var current_loading_array = ""
     while(reader.ready) {
@@ -66,6 +68,7 @@ object Elman {
         case "who" => current_loading_array = "who"
         case "whc" => current_loading_array = "whc"
         case "context" => current_loading_array = "context"
+        case "characters" => current_loading_array = "characters"
         case "---" =>
           i = 0; j = 0
         case elem =>
@@ -81,6 +84,9 @@ object Elman {
             case "context" =>
               context(i) = elem.toDouble
               i += 1
+            case "characters" =>
+              val data = elem.split("->").map(_.trim())
+              if(data.size >= 2) output_to_character += (data(0).toInt -> data(1).charAt(0))
             case _ => // do nothing
           }
       }
@@ -105,7 +111,7 @@ object Elman {
       }
     }
 
-    (input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context)
+    (input_neurons, hidden_neurons, output_neurons, wih, wch, who, whc, context, output_to_character)
   }
 }
 /**
@@ -128,14 +134,16 @@ object Elman {
               private var wch:Array[Array[Double]],
               private var who:Array[Array[Double]],
               private var whc:Array[Double],
-              private var context:Array[Double]) {
+              private var context:Array[Double],
+              private var output_to_character:HashMap[Int, Char]) {
   def this(input_neurons:Int, hidden_neurons:Int, output_neurons:Int) {
     this(input_neurons, hidden_neurons, output_neurons,
          wih = Array.ofDim[Double](input_neurons+1,   hidden_neurons),
          wch = Array.ofDim[Double](hidden_neurons+1, hidden_neurons),
          who = Array.ofDim[Double](hidden_neurons+1,  output_neurons),
          whc = Array.ofDim[Double](hidden_neurons),
-         context = Array.ofDim[Double](hidden_neurons))
+         context = Array.ofDim[Double](hidden_neurons),
+         output_to_character = HashMap[Int, Char]())
     assignRandomWeights()
   }
   def this(input_neurons:Int, hidden_neurons:Int, output_neurons:Int, file:String) {
@@ -144,17 +152,17 @@ object Elman {
          wch = Array.ofDim[Double](hidden_neurons+1, hidden_neurons),
          who = Array.ofDim[Double](hidden_neurons+1,  output_neurons),
          whc = Array.ofDim[Double](hidden_neurons),
-         context = Array.ofDim[Double](hidden_neurons))
+         context = Array.ofDim[Double](hidden_neurons),
+         output_to_character = HashMap[Int, Char]())
     load(file)
   }
   
   val context_neurons:Int = hidden_neurons  // количество нейронов в контекстном слое. Равняется количеству нейронов скрытого слоя
 
-  private var _output_to_character = HashMap[Int, Char]() // neuron_num -> char
   def outputToCharacter_=(new_output_to_character:Map[Int, Char]) {
-    _output_to_character ++= new_output_to_character
+    output_to_character ++= new_output_to_character
   }
-  def outputToCharacter = _output_to_character.toMap
+  def outputToCharacter = output_to_character.toMap
 
   require(wih.length == input_neurons+1)
   require(!wih.isEmpty && wih(0).length == hidden_neurons)
@@ -409,7 +417,7 @@ object Elman {
 
     sb.append("characters\n")
     for {
-      (neuron_num, character) <- _output_to_character
+      (neuron_num, character) <- output_to_character
     } sb.append(neuron_num+" -> "+character+"\n")
     sb.append("---\n")
 
@@ -452,7 +460,7 @@ object Elman {
               i += 1
             case "characters" =>
               val data = elem.split("->").map(_.trim())
-              if(data.size >= 2) _output_to_character += (data(0).toInt -> data(1).charAt(0))
+              if(data.size >= 2) output_to_character += (data(0).toInt -> data(1).charAt(0))
             case _ => //do nothing
           }
       }

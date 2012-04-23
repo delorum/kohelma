@@ -12,7 +12,7 @@
   
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
-  <property name="compiler.args" value=""/>
+  <property name="compiler.args" value="-target 1.6"/>
   <property name="compiler.max.memory" value="128m"/>
   <patternset id="ignored.files">
     <exclude name="**/CVS/**"/>
@@ -87,6 +87,30 @@
   
   <!-- Project Libraries -->
   
+  <path id="library.maven:_asm:asm-commons:3.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/asm/asm-commons/3.0/asm-commons-3.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_asm:asm-tree:3.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/asm/asm-tree/3.0/asm-tree-3.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_asm:asm:3.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/asm/asm/3.0/asm-3.0.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.intellij:forms_rt:7.0.3.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/intellij/forms_rt/7.0.3/forms_rt-7.0.3.jar"/>
+  </path>
+  
+  <path id="library.maven:_com.jgoodies:forms:1.1-preview.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/jgoodies/forms/1.1-preview/forms-1.1-preview.jar"/>
+  </path>
+  
+  <path id="library.maven:_jdom:jdom:1.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/jdom/jdom/1.0/jdom-1.0.jar"/>
+  </path>
+  
   <path id="library.maven:_junit:junit:3.8.1.classpath">
     <pathelement location="${path.variable.maven_repository}/junit/junit/3.8.1/junit-3.8.1.jar"/>
   </path>
@@ -146,6 +170,12 @@
     <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
     <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
     <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+    <path refid="library.maven:_com.intellij:forms_rt:7.0.3.classpath"/>
+    <path refid="library.maven:_asm:asm-commons:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm-tree:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm:3.0.classpath"/>
+    <path refid="library.maven:_com.jgoodies:forms:1.1-preview.classpath"/>
+    <path refid="library.maven:_jdom:jdom:1.0.classpath"/>
   </path>
   
   <path id="kohelma.runtime.production.module.classpath">
@@ -154,6 +184,12 @@
     <path refid="library.maven:_org.scala-lang:scala-library:2.9.1.classpath"/>
     <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
     <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+    <path refid="library.maven:_com.intellij:forms_rt:7.0.3.classpath"/>
+    <path refid="library.maven:_asm:asm-commons:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm-tree:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm:3.0.classpath"/>
+    <path refid="library.maven:_com.jgoodies:forms:1.1-preview.classpath"/>
+    <path refid="library.maven:_jdom:jdom:1.0.classpath"/>
   </path>
   
   <path id="kohelma.module.classpath">
@@ -164,6 +200,12 @@
     <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
     <path refid="library.maven:_junit:junit:3.8.1.classpath"/>
     <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+    <path refid="library.maven:_com.intellij:forms_rt:7.0.3.classpath"/>
+    <path refid="library.maven:_asm:asm-commons:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm-tree:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm:3.0.classpath"/>
+    <path refid="library.maven:_com.jgoodies:forms:1.1-preview.classpath"/>
+    <path refid="library.maven:_jdom:jdom:1.0.classpath"/>
   </path>
   
   <path id="kohelma.runtime.module.classpath">
@@ -174,6 +216,12 @@
     <path refid="library.maven:_org.scala-lang:scala-swing:2.9.1.classpath"/>
     <path refid="library.maven:_junit:junit:3.8.1.classpath"/>
     <path refid="library.maven:_net.sourceforge.javaocr:javaocr:1.0.classpath"/>
+    <path refid="library.maven:_com.intellij:forms_rt:7.0.3.classpath"/>
+    <path refid="library.maven:_asm:asm-commons:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm-tree:3.0.classpath"/>
+    <path refid="library.maven:_asm:asm:3.0.classpath"/>
+    <path refid="library.maven:_com.jgoodies:forms:1.1-preview.classpath"/>
+    <path refid="library.maven:_jdom:jdom:1.0.classpath"/>
   </path>
   
   
@@ -188,6 +236,7 @@
   <path id="kohelma.module.sourcepath">
     <dirset dir="${module.kohelma.basedir}">
       <include name="src/main/scala"/>
+      <include name="target/dependency"/>
     </dirset>
   </path>
   
@@ -212,6 +261,10 @@
     
     <copy todir="${kohelma.output.dir}">
       <fileset dir="${module.kohelma.basedir}/src/main/scala">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.kohelma.basedir}/target/dependency">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>

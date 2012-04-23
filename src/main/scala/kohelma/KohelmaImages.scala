@@ -39,11 +39,11 @@ class KohelmaImages(val image_width:Int = 75, val image_height:Int = 75) {
       char = characters(num)
     } yield (num -> char)).toMap
 
-    val training_filenames = new File(directory).list().filter(_ != "patterns").sortWith((a,b) =>
-      (a.replaceAll("char_", "").replaceAll(".png", "")).toInt < (b.replaceAll("char_", "").replaceAll(".png", "")).toInt)
+    val training_filenames_with_index = new File(directory).list().filter(_ != "patterns").sortWith((a,b) =>
+      (a.replaceAll("char_", "").replaceAll(".png", "")).toInt < (b.replaceAll("char_", "").replaceAll(".png", "")).toInt).zipWithIndex
 
     val images = (
-      for((filename, num) <- training_filenames.zipWithIndex) yield {
+      for((filename, num) <- training_filenames_with_index) yield {
         (filename, characters(num), ImageTools.normalizedGrayscalePixelsFromImage(directory+"/"+filename).map(_.toDouble))
       }
     ).toList

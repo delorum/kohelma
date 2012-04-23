@@ -151,6 +151,7 @@ object KohelmaMain extends App {
         def getDescription = ""
       })
       if(chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+        elman.outputToCharacter = kohelma_images.outputToCharacter
         elman.save(chooser.getSelectedFile.getAbsolutePath)
         gui.training_labels_netPath.setText(chooser.getSelectedFile.getAbsolutePath)
       }
@@ -318,24 +319,33 @@ object KohelmaMain extends App {
               filter()
             }.pixels.map(_.toFloat)).map(_.toDouble)
 
-            val answers = networks.values.toList.map{
-              case net =>
+            val answers = networks.values.toList.zipWithIndex.map{
+              case (net, net_number) =>
+                println("network "+net_number)
                 val outputs = net.outputs(character_pixels)
+                println(outputs.mkString("", " : ", ""))
                 val outputs_max = outputs.max
+
+                def avg(arr:Array[Double]) = arr.sum/arr.length
+                val average_without_max = avg(outputs.filterNot(_ == outputs_max))
+
+                val diff = outputs_max - average_without_max
                 val (_, outputs_max_index) = (outputs.zipWithIndex.find {case (output, index) => output == outputs_max}).get
                 val character = net.outputToCharacter(outputs_max_index)
-                (character, outputs_max)
+                (character, diff)
             }.sortWith {
-              case ((char1, max1), (char2, max2)) => max1 > max2
+              case ((char1, diff1), (char2, diff2)) => diff1 > diff2
             }
-            if(answers.isEmpty) {
-              val (char, max) = answers.head
+            if(!answers.isEmpty) {
+              val (char, _) = answers.head
+              //print(char)
               result += char
             }
           }
         }, 0, 0, img.getWidth, img.getHeight)
-        gui.recognition_textpanes_text.setText(result.toString())
-        gui.recognition_labels_imagePath.setText(chooser.getSelectedFile.getAbsolutePath)
+        println()
+        gui.networks_textpanes_text.setText(result.toString())
+        //gui.networks_labels_imagePath.setText(chooser.getSelectedFile.getAbsolutePath)
       }
     }
   })
